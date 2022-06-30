@@ -256,6 +256,9 @@ class Worm:
             if self.state_queue is not None and self.time_step % 5 == 0:
                 self.state_queue.put(self.get_state(neuron_net))
 
+        # print(neuron_net.neurons)
+        # print('stop')
+
 
     def set_muscles_input(self,neuron_net):
         head_muscles_num = 6

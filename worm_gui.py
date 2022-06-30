@@ -363,33 +363,7 @@ def run_gui():
     infoObject = pygame.display.Info()
     # screen = pygame.display.set_mode((infoObject.current_w,infoObject.current_h)) #depth=32，flags=pygame.FULLSCREEN
 
-    # screen = pygame.display.set_mode((1800*2, 1200*2)) #1800,1200
-
     screen = pygame.display.set_mode((600 * 2, 1080 * 2))  # 1800*2,1200*2
-
-    # # set temperature area
-    # a = np.arange(-1.5, 3.5, 0.01)
-    # b = np.arange(-1.5, 3.5, 0.01)
-    #
-    # X, Y = np.meshgrid(a, b)
-    # Z = height(X, Y)
-    #
-    # # N=np.arange(-0.2,1.5,0.1)
-    # N = np.arange(-0.2, 1.5, 0.01)
-    # #CS = plt.contourf(Z, N, linewidth=2, cmap=mpl.cm.jet)
-    #
-    # #fig, axes = plt.contourf(Z, N, linewidth=2, cmap=mpl.cm.jet)
-    # fig=plt.contourf(X,Y,Z)
-    # #axes.plot([1, 2], [1, 2], color='green', label='test')
-    #
-    # fig.canvas.draw()
-    #
-    # fig = pylab.figure(CS)
-    # #
-    # canvas = agg.FigureCanvasAgg(fig)
-    # canvas.draw()
-    # renderer = canvas.get_renderer()
-    # raw_data = renderer.tostring_rgb()
 
     game_clock = pygame.time.Clock()
 
@@ -496,17 +470,17 @@ def run_gui():
         # print("first_rod[0][0]",first_rod[0][0])
 
         # bound processing
-        if first_rod[0][0] == 0:
-            touch_signal[0] = 1
-            # first_rod[0][0] = 0
-        if first_rod[0][1] >= infoObject.current_h:
-            touch_signal[0] = 1
-            # first_rod[0][1] = infoObject.current_h
-        if last_rod[1][0] >= infoObject.current_w:
-            touch_signal[1] = 1
-            # last_rod[1][0] = infoObject.current_w
-        if last_rod[1][1] >= infoObject.current_h:
-            touch_signal[1] = 1
+        # if first_rod[0][0] == 0:
+        #     touch_signal[0] = 1
+        #     # first_rod[0][0] = 0
+        # if first_rod[0][1] >= infoObject.current_h:
+        #     touch_signal[0] = 1
+        #     # first_rod[0][1] = infoObject.current_h
+        # if last_rod[1][0] >= infoObject.current_w:
+        #     touch_signal[1] = 1
+        #     # last_rod[1][0] = infoObject.current_w
+        # if last_rod[1][1] >= infoObject.current_h:
+        #     touch_signal[1] = 1
             # last_rod[1][1] = infoObject.current_h
 
         # if distance_to_head < distance_to_tail:
@@ -637,18 +611,18 @@ def run_gui():
         colors = gen_colors(6)
 
         if button_clicked_img3 == True and (xy_pos[0] * scale + shift[0] > 310 and xy_pos[1] * scale + shift[1] > 100):
-            pygame.draw.circle(screen, (Hex_to_RGB(colors[5])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 100)
+            # pygame.draw.circle(screen, (Hex_to_RGB(colors[5])),
+            #                    (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 30) # 100
             pygame.draw.circle(screen, (Hex_to_RGB(colors[4])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 60)
+                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 20) # 60
             pygame.draw.circle(screen, (Hex_to_RGB(colors[3])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 35)
+                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 15) # 35
             pygame.draw.circle(screen, (Hex_to_RGB(colors[2])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 20)
+                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 10) # 20
             pygame.draw.circle(screen, (Hex_to_RGB(colors[1])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 10)
+                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 7) # 10
             pygame.draw.circle(screen, (Hex_to_RGB(colors[0])),
-                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 5)
+                               (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 5) # 5
 
         # pygame.draw.circle(screen, (50, 0, 0), (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]),r + 100 + 100)
         # pygame.draw.circle(screen, (100, 0, 0), (xy_pos[0] * scale + shift[0], xy_pos[1] * scale + shift[1]), r + 100)
@@ -703,11 +677,23 @@ def run_gui():
                     #print("Right Mouse Key is being pressed")
                     distance_to_head = (head_location[0] - pos[0]) ** 2 + (head_location[1] - pos[1]) ** 2
                     distance_to_tail = (tail_location[0] - pos[0]) ** 2 + (tail_location[1] - pos[1]) ** 2
-                    if distance_to_head < distance_to_tail:
-                        touch_signal[0] = 1
-                        #print("touch worm head at:", (pos[0] - shift[0]) / scale, (pos[1] - shift[1]) / scale)
+                    if (pos[0] < bottom_right[0] and pos[1] < bottom_right[1]) and \
+                        (pos[0] > top_left[0] and pos[1] > top_left[1]):
+                        distance_to_head = (head_location[0]-pos[0])**2 + (head_location[1]-pos[1])**2
+                        distance_to_tail = (tail_location[0]-pos[0])**2 + (tail_location[1]-pos[1])**2
+                        if distance_to_head < distance_to_tail:
+                            touch_signal[0] = 1
+                            print("touch worm head at:",(pos[0]-shift[0])/scale,(pos[1]-shift[1])/scale)
+                        else:
+                            touch_signal[1] = 1
+                            print("touch worm tail at:",(pos[0]-shift[0])/scale,(pos[1]-shift[1])/scale)
                     else:
-                        touch_signal[1] = 1
+                        print('out of bound')
+                    # if distance_to_head < distance_to_tail:
+                    #     touch_signal[0] = 1
+                    #     #print("touch worm head at:", (pos[0] - shift[0]) / scale, (pos[1] - shift[1]) / scale)
+                    # else:
+                    #     touch_signal[1] = 1
                         #print("touch worm tail at:", (pos[0] - shift[0]) / scale, (pos[1] - shift[1]) / scale)
 
                     # print(nacl_location[0],nacl_location[1])
@@ -965,36 +951,68 @@ class WormPlotter():
         sys.exit(self.app.exec_())
 
 
+def plot_circuit():
+    # Data stuff
+    trace = []
+    trace_step = 30
+    size = width, height = 1960, 1080
+
+    pygame.init()
+    pygame.display.set_caption("c.elegans")
+    infoObject = pygame.display.Info()
+
+    screen = pygame.display.set_mode((600 , 1080))  # 1800*2,1200*2
+
+    game_clock = pygame.time.Clock()
+
+    # Variable to keep our main loop running
+    running = True
+    step = 0
+
+    while running:
+        step += 1
+        # 绘制线条
+        # screen.fill((0,0,0))
+        # screen.fill((188, 210, 230)) #  blue
+        screen.fill((255, 255, 250))
+        pygame.draw.circle(screen, (255, 0, 0), (t[0], t[1]), 2)
+        pygame.display.update()
+        # for loop through the event queue
+        game_clock.tick(1000)
+
 def plot_state():
     m = WormPlotter(sampleinterval=0.05, timewindow=10.)
     m.run()
 
 
 def run_worm():
+    i = 0
     # start_time = time.time()
     while True:
         worm_net.run(100000)
+        print('\nTest num: ', i)
+        i += 1
     # end_time = time.time()
     # print(end_time - start_time)
 
 
 if __name__ == '__main__':
     # scale = 1e6*0.0001
-    scale = 1e6 * 0.5  # 0.5
-    shift = (950, 500)
+    scale = 1e6 * 0.2 # 0.5
+    shift = (950, 1000)
 
     plot_state_flag = True
 
     xy_pos = (0.001, 0.0009)
     r = 5  # 10
-    nacl = Nacl(xy_pos[0], xy_pos[1], 10000, 50 * 5, r, scale)  # x_center,y_center,alpha,peak,r_pixel,scale
+    nacl = Nacl(xy_pos[0], xy_pos[1], 1000, 5 * 2, r, scale)  # x_center,y_center,alpha,peak,r_pixel,scale
 
     # nacl.update_pool()
 
     if plot_state_flag:
         state_queue = Queue()
         # funcs = [run_worm, run_gui, plot_state, run_worm3d]
-        funcs = [run_worm, run_gui, plot_state]
+        funcs = [run_worm, run_gui, plot_state] #, plot_circuit]
     else:
         state_queue = None
         # funcs = [run_worm, run_gui,run_worm3d]
