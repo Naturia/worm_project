@@ -427,36 +427,36 @@ def run_gui():
         #text = font.render("Button", True, color_text)
         #text_rect = text_clicked.get_rect(center=(370, 10))
 
-        img1=pygame.image.load("./img/touch.png").convert_alpha()
+        img1=pygame.image.load("touch.png").convert_alpha()
         img1=pygame.transform.scale(img1, (50, 50))
         screen.blit(img1,[10,10])
-        img2 = pygame.image.load("./img/hammer.jpg").convert()
+        img2 = pygame.image.load("hammer.jpg").convert()
         img2 =pygame.transform.scale(img2, (50, 50))
-        img2_1 = pygame.image.load("./img/shield.jpeg").convert()
+        img2_1 = pygame.image.load("shield.jpeg").convert()
         img2_1 = pygame.transform.scale(img2_1, (50, 50))
         #screen.blit(img2, [70, 10])
         if button_clicked_img2 == True:
             screen.blit(img2_1, [70, 10])
         else:
             screen.blit(img2, [70, 10])
-        img3 = pygame.image.load("./img/meal.png").convert_alpha()
+        img3 = pygame.image.load("meal.png").convert_alpha()
         img3 =pygame.transform.scale(img3, (50, 50))
-        img3_1 = pygame.image.load("./img/food2.png").convert_alpha()
+        img3_1 = pygame.image.load("food2.png").convert_alpha()
         img3_1 = pygame.transform.scale(img3_1, (50, 50))
         #screen.blit(img3, [130, 10])
         if button_clicked_img3 == True:
             screen.blit(img3_1, [130, 10])
         else:
             screen.blit(img3, [130, 10])
-        img4 = pygame.image.load("./img/poison.png").convert_alpha()
+        img4 = pygame.image.load("poison.png").convert_alpha()
         img4 =pygame.transform.scale(img4, (50, 50))
         screen.blit(img4, [190, 10])
-        img5 = pygame.image.load("./img/shoken.png").convert_alpha()
+        img5 = pygame.image.load("shoken.png").convert_alpha()
         img5 =pygame.transform.scale(img5, (50, 50))
         screen.blit(img5, [250, 10])
-        img6 = pygame.image.load("./img/neuron.jpg").convert()
+        img6 = pygame.image.load("neuron.jpg").convert()
         img6 =pygame.transform.scale(img6, (50, 50))
-        img6_1 = pygame.image.load("./img/glass.png").convert()
+        img6_1 = pygame.image.load("glass.png").convert()
         img6_1 = pygame.transform.scale(img6_1, (50, 50))
         #screen.blit(img6, [310, 10])
         if button_clicked_img6 == True:
@@ -765,6 +765,87 @@ def run_gui():
 #     def run(self):
 #         self.app.exec_()
 
+def run_worm3d():
+    pygame.init()
+    viewport = (800, 600)
+    hx = viewport[0] / 2
+    hy = viewport[1] / 2
+    srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
+
+    glLightfv(GL_LIGHT0, GL_POSITION, (-40, 200, 100, 0.0))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, (0.8, 0.8, 0.8, 1.0))
+    # glLightfv(GL_LIGHT0, GL_DIFFUSE, (0.5, 0.5, 0.5, 1.0))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, (0.9, 0.9, 0.9, 1.0))
+
+    glEnable(GL_LIGHT0)
+    glEnable(GL_LIGHTING)
+    glEnable(GL_COLOR_MATERIAL)
+    glEnable(GL_DEPTH_TEST)
+    glShadeModel(GL_SMOOTH)  # most obj files expect to be smooth-shaded
+    glEnable(GL_CULL_FACE)
+    glFrontFace(GL_CCW)
+    glEnable(GL_COLOR_MATERIAL)
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
+
+    # LOAD OBJECT AFTER PYGAME INIT
+    # obj = OBJ(sys.argv[1], swapyz=True)
+    obj = OBJ('worm3d6.obj', swapyz=True)
+
+    clock = pygame.time.Clock()
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    width, height = viewport
+    gluPerspective(90.0, width / float(height), 1, 100.0)
+    glEnable(GL_DEPTH_TEST)
+    glMatrixMode(GL_MODELVIEW)
+
+    rx, ry = (0, 0)
+    tx, ty = (0, 0)
+    zpos = 5
+    rotate = move = False
+    while 1:
+        clock.tick(30)
+        for e in pygame.event.get():
+            if e.type == QUIT:
+                sys.exit()
+            elif e.type == KEYDOWN and e.key == K_ESCAPE:
+                sys.exit()
+            elif e.type == MOUSEBUTTONDOWN:
+                if e.button == 4:
+                    zpos = max(1, zpos - 1)
+                elif e.button == 5:
+                    zpos += 1
+                elif e.button == 1:
+                    rotate = True
+                elif e.button == 3:
+                    move = True
+            elif e.type == MOUSEBUTTONUP:
+                if e.button == 1:
+                    rotate = False
+                elif e.button == 3:
+                    move = False
+            elif e.type == MOUSEMOTION:
+                i, j = e.rel
+                if rotate:
+                    rx += i
+                    ry += j
+                if move:
+                    tx += i
+                    ty -= j
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+
+        # RENDER OBJECT
+        glTranslate(tx / 20., ty / 20., - zpos)
+        glRotate(ry, 1, 0, 0)
+        glRotate(rx, 0, 1, 0)
+        glCallList(obj.gl_list)
+
+        pygame.display.flip()
+
 
 class WormPlotter():
 
@@ -872,11 +953,11 @@ if __name__ == '__main__':
     
     if plot_state_flag:
         state_queue = Queue()
-        #funcs = [run_worm, run_gui, plot_state]
+        #funcs = [run_worm, run_gui, plot_state, run_worm3d]
         funcs = [run_worm, run_gui, plot_state]
     else:
         state_queue = None
-        #funcs = [run_worm, run_gui]
+        #funcs = [run_worm, run_gui,run_worm3d]
         funcs = [run_worm, run_gui]
 
     queue = Queue()
