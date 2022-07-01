@@ -12,6 +12,7 @@ import time
 from multiprocessing import Process, Queue, Array
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
+import math
 
 # pg.setConfigOption('background', (188, 210, 230))
 pg.setConfigOption('background', 'w')
@@ -482,6 +483,190 @@ def run_gui():
         text_rect_img5 = pygame.Rect(250, 10, 50, 50)
         text_rect_img6 = pygame.Rect(310, 10, 50, 50)
 
+        # # Draw neurons activition 1
+        # # sensory neurons
+        # pygame.draw.circle(screen, (255, 215, 0),(20, 110), 10, 2)
+        # pygame.draw.circle(screen, (255, 215, 0),(50, 110), 10, 2)
+        # pygame.draw.circle(screen, (255, 215, 0),(80, 110), 10, 2)
+        # pygame.draw.circle(screen, (255, 215, 0),(110, 110), 10,2)
+        # pygame.draw.circle(screen, (255, 215, 0),(150, 110), 10, 2)
+        # pygame.draw.circle(screen, (255, 215, 0),(180, 110), 10, 2)
+        #
+        # #interneurons
+        # pygame.draw.circle(screen,  (47, 79, 79), (30, 140), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (60, 140), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (30, 170), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (60, 170), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (100, 140), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (130, 140), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (110, 170), 10, 2)
+        # pygame.draw.circle(screen,  (47, 79, 79), (160, 140), 10, 2)
+        # pygame.draw.circle(screen, (47, 79, 79), (160, 170), 10, 2)
+        #
+        # #motor neurons
+        #
+        # pygame.draw.circle(screen, (188, 210, 230), (20, 200), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (20, 230), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (60, 200), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (60, 230), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (100, 200), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (100, 230), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (140, 200), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (140, 230), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (180, 200), 10, 2)
+        # pygame.draw.circle(screen, (188, 210, 230), (180, 230), 10, 2)
+
+        # Draw neurons activition 2
+        # sensory neurons
+
+        x0 = 1080
+        y0 = 120
+        r = 100
+        font1 = pygame.font.SysFont('arial', 5)
+        # screen.blit(text, (500, 300))
+        text=['PLM','PVM','ALM','AVM','AFD','AWC','ASE','AIY','AIZ','RIA','SMDD','SMDV','RMDD','RMDV','SMBD','SMBV','AVB','PVC','AVA','DB','VB','VD','DD','VA','DA']
+
+        state_dict = state_queue.get()
+        print("state_dict", state_dict)
+
+        for i in range(1,26):
+            theta=((i-1)*14.4*math.pi)/180
+            x1=x0+r*math.cos(theta)
+            y1=y0+r*math.sin(theta)
+
+            if i < 10:
+                pygame.draw.circle(screen, (255, 215, 0), (x1,y1), 10, 2)
+            elif i>=10 and i<20:
+                pygame.draw.circle(screen, (47, 79, 79), (x1, y1), 10, 2)
+            else:
+                pygame.draw.circle(screen, (0, 255, 255), (x1, y1), 10, 2)
+            neuron_text = font1.render(text[i-1], True, (0, 0, 0))
+            screen.blit(neuron_text, (x1-5,y1-3))
+
+        if state_dict['SMDD'] >= -0.02:
+            pygame.draw.circle(screen, (188, 210, 230),(x0+r*math.cos(((11-1)*14.4*math.pi)/180),y0 + r * math.sin(((11-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['SMDV'] >= -0.02:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((12-1)*14.4*math.pi)/180),y0 + r * math.sin(((12-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['RMDD'] >= -0.04:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((13-1)*14.4*math.pi)/180),y0 + r * math.sin(((13-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['RMDV'] >= -0.04:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((14-1)*14.4*math.pi)/180),y0 + r * math.sin(((14-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['ASEL'] != 0:
+            pygame.draw.circle(screen, (188, 210, 230),(x0+r*math.cos(((7-1)*14.4*math.pi)/180),y0 + r * math.sin(((7-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['ASER'] != 0:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((7-1)*14.4*math.pi)/180),y0 + r * math.sin(((7-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['AVM'] != 0:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((4-1)*14.4*math.pi)/180),y0 + r * math.sin(((4-1)*14.4*math.pi)/180)), 10, 10)
+        if state_dict['PLM'] != 0:
+            pygame.draw.circle(screen, (188, 210, 230), (x0+r*math.cos(((1-1)*14.4*math.pi)/180),y0 + r * math.sin(((1-1)*14.4*math.pi)/180)), 10, 10)
+
+        # # 画直线，起点坐标为start_pos,终点坐标为end_pos取值为二元组，width是粗细程度
+        pygame.draw.aaline(screen, (47, 79, 79), (x0+r*math.cos(((1-1)*14.4*math.pi)/180),y0 + r * math.sin(((1-1)*14.4*math.pi)/180)), (x0+r*math.cos(((17-1)*14.4*math.pi)/180),y0 + r * math.sin(((17-1)*14.4*math.pi)/180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (x0+r*math.cos(((1-1)*14.4*math.pi)/180),y0 + r * math.sin(((1-1)*14.4*math.pi)/180)), (x0+r*math.cos(((18-1)*14.4*math.pi)/180),y0 + r * math.sin(((18-1)*14.4*math.pi)/180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (x0+r*math.cos(((2-1)*14.4*math.pi)/180),y0 + r * math.sin(((2-1)*14.4*math.pi)/180)), (x0+r*math.cos(((17-1)*14.4*math.pi)/180),y0 + r * math.sin(((17-1)*14.4*math.pi)/180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (x0+r*math.cos(((2-1)*14.4*math.pi)/180),y0 + r * math.sin(((2-1)*14.4*math.pi)/180)), (x0+r*math.cos(((18-1)*14.4*math.pi)/180),y0 + r * math.sin(((18-1)*14.4*math.pi)/180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((3 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((3 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((19 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((19 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((4 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((4 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((19 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((19 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((5- 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((5 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((8 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((8 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((6 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((6- 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((8 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((8 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((7 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((7 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((8 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((8 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((8- 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((8- 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((9 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((9 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((8- 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((8 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((10 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((10 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((9 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((9- 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((10 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((10 - 1) * 14.4 * math.pi) / 180)), 10)
+
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((10 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((10 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((15 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((15 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((10 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((10 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((16 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((16 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((11 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((11 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((13 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((13 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((11 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((11 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((14 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((14 - 1) * 14.4 * math.pi) / 180)), 10)
+
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((12 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((12 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((13 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((13 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((12 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((12 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((14 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((14 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((11 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((11 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((17 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((17 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((20 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((20 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((22 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((22 - 1) * 14.4 * math.pi) / 180)), 10)
+
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((20 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((20 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((22 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((22 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((21 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((21 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((23 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((23- 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((21 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((21 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((23 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((23 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((22 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((22 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((24 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((24- 1) * 14.4 * math.pi) / 180)), 10)
+
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((23- 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((23 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((25 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((25 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((17 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((17 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((23 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((23 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((18 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((18 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((21 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((21 - 1) * 14.4 * math.pi) / 180)), 10)
+        pygame.draw.aaline(screen, (47, 79, 79), (
+        x0 + r * math.cos(((19 - 1) * 14.4 * math.pi) / 180), y0 + r * math.sin(((19 - 1) * 14.4 * math.pi) / 180)), (
+                           x0 + r * math.cos(((24 - 1) * 14.4 * math.pi) / 180),
+                           y0 + r * math.sin(((24 - 1) * 14.4 * math.pi) / 180)), 10)
+
+
         rods_locations, lateral_locations, diagonal_locations = queue.get()
         # start_time = time.time()
 
@@ -561,6 +746,22 @@ def run_gui():
                 # pygame.draw.line(screen, (105,105,105), location[0], location[1], 2)
                 pygame.draw.line(screen, (160, 160, 160), location[0], location[1], 2)
         else:
+            # if state_dict['SMDD'] >= -0.02:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[3][0][0] - 1, rods_locations[3][0][1] + 1, 10, 5], 0)
+            # if state_dict['SMDV'] >= -0.02:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[3][0][0] - 1, rods_locations[3][0][1] + 3, 10, 5], 0)
+            # if state_dict['RMDD'] >= -0.04:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[5][0][0] - 1, rods_locations[5][0][1] + 1, 10, 5], 0)
+            # if state_dict['RMDV'] >= -0.04:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[5][0][0] - 1, rods_locations[5][0][1] + 3, 10, 5], 0)
+            # if state_dict['ASEL'] != 0:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[7][0][0] - 1, rods_locations[7][0][1] + 1, 10, 5], 0)
+            # if state_dict['ASER'] != 0:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[8][0][0] - 1, rods_locations[8][0][1] + 1, 10, 5], 0)
+            # if state_dict['AVM'] != 0:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[9][0][0] - 1, rods_locations[9][0][1] + 1, 10, 5], 0)
+            # if state_dict['PLM'] != 0:
+            #     pygame.draw.ellipse(screen, (124,252,0),[rods_locations[10][0][0] - 1, rods_locations[10][0][1] + 1, 10, 5], 0)
             for i in range(len(rods_locations)):  # cut
                 #print("location", rods_locations[i])
                 if i >= 2 and i % 5 == 0:
