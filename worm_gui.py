@@ -990,22 +990,20 @@ def run_worm():
     # start_time = time.time()
     while True:
         worm_net.run(100000)
-        print('\nTest num: ', i)
-        i += 1
     # end_time = time.time()
     # print(end_time - start_time)
 
 
 if __name__ == '__main__':
     # scale = 1e6*0.0001
-    scale = 1e6 * 0.2 # 0.5
-    shift = (950, 1000)
+    scale = 1e6 * 0.5 # 0.5
+    shift = (950, 500)
 
     plot_state_flag = True
 
     xy_pos = (0.001, 0.0009)
-    r = 5  # 10
-    nacl = Nacl(xy_pos[0], xy_pos[1], 1000, 5 * 2, r, scale)  # x_center,y_center,alpha,peak,r_pixel,scale
+    r = 10 #5  # 10
+    nacl = Nacl(xy_pos[0], xy_pos[1], 10000, 50 * 5, r, scale)  # x_center,y_center,alpha,peak,r_pixel,scale
 
     # nacl.update_pool()
 
