@@ -256,6 +256,9 @@ class Worm:
             if self.state_queue is not None and self.time_step % 5 == 0:
                 self.state_queue.put(self.get_state(neuron_net))
 
+        # print(neuron_net.neurons)
+        # print('stop')
+
 
     def set_muscles_input(self,neuron_net):
         head_muscles_num = 6
@@ -656,12 +659,31 @@ class Worm:
     def get_state(self,worm_net):
         state_dict = {}
         head_v = worm_net.headnet.v_[:]
+        vnc_v  = worm_net.vncnet.v_[:]
+        klinotaxis_v = worm_net.klinotaxis_net.v_[:]
+        motor_v = worm_net.motor_control_net.v_[:]
+
         state_dict["time"] = self.time
         #head
         state_dict["SMDD"] = head_v[worm_net.headneuron_index["SMDD"]]
         state_dict["SMDV"] = head_v[worm_net.headneuron_index["SMDV"]]
         state_dict["RMDD"] = head_v[worm_net.headneuron_index["RMDD"]]
         state_dict["RMDV"] = head_v[worm_net.headneuron_index["RMDV"]]
+        #vnc
+        for key in worm_net.vncneuron_index.keys():
+            for i in range(worm_net.unit_num):
+                vncindex = i * worm_net.neuron_per_unit + worm_net.vncneuron_index[key]
+                vnckey = key + str(i+1)
+                state_dict[vnckey] = vnc_v[vncindex]
+
+        #klinotaxis
+        for key in worm_net.klinotaxis_index.keys():
+            state_dict[key] = klinotaxis_v[worm_net.klinotaxis_index[key]]
+
+        #motor
+        for key in worm_net.motor_control_index.keys():
+            state_dict[key] = motor_v[worm_net.motor_control_index[key]]
+
         #nacl sensor
         state_dict["ASEL"] = worm_net.ASEL.get_v()
         state_dict["ASER"] = worm_net.ASER.get_v()

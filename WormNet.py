@@ -101,6 +101,7 @@ class WormNet:
         self.worm_entity = worm_entity
         self.nacl_entity = nacl_entity
         self.touch_entity = touch_entity
+        self.total_neuron = []
 
         #head parameters 
         if head_parameters is None:
@@ -367,6 +368,8 @@ class WormNet:
         #head 
         self.headneuron_index = {"SMDD":0,"SMDV":1,"RMDD":2,"RMDV":3}
         self.headnet = self.create_head_neuron(len(self.headneuron_index), eqs, method)
+        for key in self.headneuron_index.keys():
+            self.total_neuron.append(key)
         head_sources_chemi,head_targets_chemi,head_weights_chemi = self.get_head_chemical_connections(self.headneuron_index)
         head_sources_gap,head_targets_gap,head_weights_gap = self.get_head_gap_connections(self.headneuron_index)
         self.headsyn_chemi = self.connect_group(self.headnet,head_sources_chemi,head_targets_chemi,head_weights_chemi,neuron_chemical_syn_eqs)
@@ -375,6 +378,8 @@ class WormNet:
         # tail
         self.tailneuron_index = {"SMDDB": 0, "SMDVB": 1, "RMDDB": 2, "RMDVB": 3}
         self.tailnet = self.create_tail_neuron(len(self.tailneuron_index), eqs, method)
+        for key in self.tailneuron_index.keys():
+            self.total_neuron.append(key)
         tail_sources_chemi, tail_targets_chemi, tail_weights_chemi = self.get_tail_chemical_connections(
             self.tailneuron_index)
         tail_sources_gap, tail_targets_gap, tail_weights_gap = self.get_tail_gap_connections(self.tailneuron_index)
@@ -444,9 +449,28 @@ class WormNet:
         if record:
             self.M = StateMonitor(self.headnet, 'v', record=True)
             self.M_2 = StateMonitor(self.vncnet, 'v', record=True)
-            self.net.add([self.headnet, self.headsyn_chemi, self.headsyn_gap,self.tailnet, self.tailsyn_chemi, self.tailsyn_gap, self.vncnet, self.vncsyn_chemi,self.vncbsyn_gap, self.vncbnet, self.vncbsyn_chemi,self.vncbsyn_gap,self.klinotaxis_net, self.klinotaxis_chemi, self.klinotaxis_gap,self.body_op, self.motor_control_net,self.motor_control_chemi, self.motor_control_gap, self.M,self.M_2])
+            self.net.add([self.headnet, self.headsyn_chemi, self.headsyn_gap,self.tailnet, self.tailsyn_chemi, self.tailsyn_gap,
+                          self.vncnet, self.vncsyn_chemi,self.vncbsyn_gap, self.vncbnet, self.vncbsyn_chemi,self.vncbsyn_gap,
+                          self.klinotaxis_net, self.klinotaxis_chemi, self.klinotaxis_gap,self.body_op, self.motor_control_net,
+                          self.motor_control_chemi, self.motor_control_gap, self.M,self.M_2])
         else:
-            self.net.add([self.headnet, self.headsyn_chemi, self.headsyn_gap, self.tailnet, self.tailsyn_chemi, self.tailsyn_gap,self.vncnet, self.vncsyn_chemi,self.vncsyn_gap, self.vncbnet, self.vncbsyn_chemi,self.vncbsyn_gap, self.klinotaxis_net, self.klinotaxis_chemi, self.klinotaxis_gap,self.body_op, self.motor_control_net,self.motor_control_chemi, self.motor_control_gap])
+            self.net.add([self.headnet, self.headsyn_chemi, self.headsyn_gap, self.tailnet, self.tailsyn_chemi, self.tailsyn_gap,
+                          self.vncnet, self.vncsyn_chemi,self.vncsyn_gap, self.vncbnet, self.vncbsyn_chemi,self.vncbsyn_gap,
+                          self.klinotaxis_net, self.klinotaxis_chemi, self.klinotaxis_gap,self.body_op, self.motor_control_net,
+                          self.motor_control_chemi, self.motor_control_gap])
+
+
+        self.neurons = [self.headneuron_index.keys() | self.tailneuron_index.keys() | self.klinotaxis_index.keys() | self.motor_control_index.keys()]
+
+        for key in self.vncneuron_index.keys():
+            for i in range(self.unit_num):
+                neuron_name = key + str(i)
+                self.neurons.append(neuron_name)
+        for key in self.vncbneuron_index.keys():
+            for j in range(self.unit_num):
+                neuron_name = key + str(j)
+                self.neurons.append(neuron_name)
+
 
     def create_neuron(self,num,eqs,method):
         worm_net = NeuronGroup(num, eqs, method=method)
